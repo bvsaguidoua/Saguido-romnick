@@ -1,0 +1,48 @@
+const Task = require("../models/Task.js");
+
+module.exports.createTask = (reqBody) => {
+    return Task.findOne({ taskName: reqBody.taskName })
+    .then((result) => {
+        if (result != null && result.taskName == reqBody.taskName) {
+            return {
+                code: 200,
+                message: "Oops! Duplicate task found!",
+                data: result
+            };
+        } else {
+            let newTask = new Task({
+                taskName: reqBody.taskName
+            });
+
+            return newTask.save().then((savedTask) => {
+                return {
+                    code: 201,
+                    message: `${reqBody.taskName.toUpperCase()} is now added!`
+                };
+            });
+        }
+    })
+    .catch((err) => {
+        return {
+            code: 500,
+            message: "There is a problem while saving the task."
+        };
+    });
+};
+
+module.exports.getAllTasks = () => {
+    return Task.find({}).then((result) => {
+        if (!result || result.length === 0) {
+            return {
+                code: 200,
+                message: "There is no task added yet."
+            };
+        } else {
+            return {
+                code: 200,
+                message: "Getting all tasks. Success!",
+                data: result
+            };
+        }
+    });
+};

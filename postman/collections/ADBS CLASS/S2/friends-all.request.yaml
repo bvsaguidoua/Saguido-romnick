@@ -1,0 +1,5 @@
+$kind: http-request
+name: friends/all
+url: ""
+method: GET
+order: 1037825559724436
